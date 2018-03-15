@@ -1,6 +1,7 @@
 package ait.hu.minesweeper.Model;
 
 import android.util.Log;
+import android.widget.Toast;
 
 import java.util.Random;
 
@@ -59,7 +60,6 @@ public class MinesweeperModel {
                 model[i][j] = new Field();
             }
         }
-        activatedGame = true;
     }
 
     public void generateRandomNumbers() {
@@ -73,58 +73,57 @@ public class MinesweeperModel {
     }
 
     public boolean isMineInNorthWestCorner(int i, int j) {
-        if (model[i - 1][j - 1].isMine() && i - 1 >= 0 && j - 1 >= 0 && i - 1 < BOARD_SIZE && j - 1 < BOARD_SIZE) {
+        if ((i - 1 >= 0) && (j - 1 >= 0) && (i - 1) < BOARD_SIZE && (j - 1) < BOARD_SIZE &&
+                model[i - 1][j - 1].isMine()) {
             return true;
         } else
             return false;
     }
 
     public boolean isMineInNorthEastCorner(int i, int j) {
-        if (model[i - 1][j + 1].isMine() && i - 1 >= 0 && j + 1 >= 0 && i - 1 < BOARD_SIZE && j + 1 < BOARD_SIZE) {
+        if (i - 1 >= 0 && j + 1 >= 0 && i - 1 < BOARD_SIZE && j + 1 < BOARD_SIZE && model[i - 1][j + 1].isMine() ) {
             return true;
         } else
             return false;
     }
 
     public boolean isMineInSouthWestCorner(int i, int j) {
-        if (model[i + 1][j - 1].isMine() && i + 1 >= 0 && j - 1 >= 0 && i + 1 < BOARD_SIZE && j - 1 < BOARD_SIZE) {
+        if (i + 1 >= 0 && j - 1 >= 0 && i + 1 < BOARD_SIZE && j - 1 < BOARD_SIZE && model[i + 1][j - 1].isMine()) {
             return true;
         } else
             return false;
     }
 
     public boolean isMineInSouthEastCorner(int i, int j) {
-        if (model[i + 1][j + 1].isMine() && i + 1 >= 0 && j + 1 >= 0 && i + 1 < BOARD_SIZE && j + 1 < BOARD_SIZE) {
+        if (i + 1 >= 0 && j + 1 >= 0 && i + 1 < BOARD_SIZE && j + 1 < BOARD_SIZE && model[i + 1][j + 1].isMine()) {
             return true;
         } else
             return false;
     }
 
     public boolean isMineEast(int i, int j) {
-        if (model[i][j + 1].isMine() && i >= 0 && j + 1 >= 0 && i < BOARD_SIZE && j + 1 < BOARD_SIZE) {
+        if (i >= 0 && j + 1 >= 0 && i < BOARD_SIZE && j + 1 < BOARD_SIZE && model[i][j + 1].isMine()) {
             return true;
         } else
             return false;
     }
 
     public boolean isMineWest(int i, int j) {
-        String notFlagMode = "THIS IS THE VALUE OF I AND J";
-        Log.i(notFlagMode, i + ", j:" + j);
-        if (model[i][j - 1].isMine() && i >= 0 && j - 1 >= 0 && i < BOARD_SIZE && j - 1 < BOARD_SIZE) {
+        if (i >= 0 && j - 1 >= 0 && i < BOARD_SIZE && j - 1 < BOARD_SIZE && model[i][j - 1].isMine()) {
             return true;
         } else
             return false;
     }
 
     public boolean isMineNorth(int i, int j) {
-        if (model[i - 1][j].isMine() && i - 1 >= 0 && j >= 0 && i - 1 < BOARD_SIZE && j < BOARD_SIZE) {
+        if (i - 1 >= 0 && j >= 0 && i - 1 < BOARD_SIZE && j < BOARD_SIZE && model[i - 1][j].isMine()) {
             return true;
         } else
             return false;
     }
 
     public boolean isMineSouth(int i, int j) {
-        if (model[i + 1][j].isMine() && i + 1 >= 0 && j >= 0 && i + 1 < BOARD_SIZE && j < BOARD_SIZE) {
+        if (i + 1 >= 0 && j >= 0 && i + 1 < BOARD_SIZE && j < BOARD_SIZE && model[i + 1][j].isMine()) {
             return true;
         } else
             return false;
@@ -133,17 +132,17 @@ public class MinesweeperModel {
     public void setUpMinesAroundCount() {
         int mineNeighbors = 0;
         for (int i = 0; i < BOARD_SIZE; i++) {
-            for (int j = 0; j < BOARD_SIZE; i++) {
+            for (int j = 0; j < BOARD_SIZE; j++) {
                 if (isMineEast(i, j)) {
+                    mineNeighbors++;
+                }
+                if (isMineInNorthWestCorner(i, j)) {
                     mineNeighbors++;
                 }
                 if (isMineWest(i, j)) {
                     mineNeighbors++;
                 }
                 if (isMineInNorthEastCorner(i, j)) {
-                    mineNeighbors++;
-                }
-                if (isMineInNorthWestCorner(i, j)) {
                     mineNeighbors++;
                 }
                 if (isMineInSouthEastCorner(i, j)) {
@@ -159,12 +158,14 @@ public class MinesweeperModel {
                     mineNeighbors++;
                 }
                 model[i][j].setMinesAround(mineNeighbors);
+                mineNeighbors = 0;
             }
         }
     }
 
     public void setupFullBoard() {
         activatedGame = true;
+        flagMode = false;
         setupEmptyBoard(BOARD_SIZE, BOARD_SIZE);
         generateRandomNumbers();
         model[random1sti][random1stj].setMine();
@@ -175,10 +176,11 @@ public class MinesweeperModel {
 
     public void setGameOver() {
         for (int i = 0; i < BOARD_SIZE; i++) {
-            for (int j = 0; j < BOARD_SIZE; i++) {
+            for (int j = 0; j < BOARD_SIZE; j++) {
                 model[i][j].setWasClicked(true);
             }
         }
-        activatedGame = false;
     }
-}
+
+    }
+
